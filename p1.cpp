@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <iostream.h>
 
-// Jumpcut variable
+// Jumpcut variable 
 bool isJumpcutOn = true;
 
 // Front right leg animation variables
