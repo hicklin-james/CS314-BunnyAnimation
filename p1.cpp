@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <iostream.h>
 
-// Jumpcut variable 
+// Jumpcut variable
 bool isJumpcutOn = true;
 
 // Front right leg animation variables
@@ -55,12 +55,10 @@ bool isReared = false;
 GLfloat frames = 0;
 
 int dumpPPM(int frameNum);
-GLfloat startAnimation(bool isOn, GLfloat value, int max, float incr);
 void drawAxis();
 void drawFloor();
-bool jumpAnim = false;
 GLfloat jumpcutValue(bool isOn, GLfloat value, float max, float min);
-
+GLfloat startAnimation(bool isOn, GLfloat value, int max, float incr);
 
 unsigned char camera = 'r';
 
@@ -70,14 +68,46 @@ int Height = 400;     // window height (pixels)
 bool Dump=false;      // flag set to true when dumping animation frames
 
 void idle() {
-        if (frames != 200) {
-                frames++;
-                glutPostRedisplay();
-        }
+    if (frames != 200) {
+        
+        // Check for jump animation
+        jumpAngle = startAnimation(isJumpUp, jumpAngle, 40, 0.2);
+        jumpHeight = startAnimation(isJumpUp, jumpHeight, 1, 0.005);
+        
+        // Check for rear animation
+        rearAngle = startAnimation(isReared, rearAngle, 90, 0.45);
+        
+        // Check for body curl animation
+        curlAngle = startAnimation(isCurled, curlAngle, 40, 0.2);
+        
+        // Check for front right leg animation
+        FRLegAngle = startAnimation(isFRLegUp, FRLegAngle, 70, 0.35);
+        
+        // Check for front left leg animation
+        FLLegAngle = startAnimation(isFLLegUp, FLLegAngle, 70, 0.35);
+        
+        // Check for head nod animation
+        headAngle = startAnimation(isHeadDown, headAngle, 12, 0.06);
+        
+        // Check for right ear wiggle animation
+        REAngle = startAnimation(isREdown, REAngle, 140, 0.7);
+        
+        // Check for left ear wiggle animation
+        LEAngle = startAnimation(isLEdown, LEAngle, 140, 0.7);
+        
+        // Check for back right leg animation
+        BRLegAngle = startAnimation(isBRLegUp, BRLegAngle, 70, 0.35);
+        
+        // Check for back left leg animation
+        BLLegAngle = startAnimation(isBLLegUp, BLLegAngle, 70, 0.35);
+        
+        frames++;
+        glutPostRedisplay();
+    }
     
-        else {
-            glutIdleFunc(NULL);
-            frames = 0;
+    else {
+        glutIdleFunc(NULL);
+        frames = 0;
     }
 }
 
@@ -140,7 +170,7 @@ void keyboardCallback(unsigned char c, int x, int y) {
             isHeadDown = !isHeadDown;
             if (!isJumpcutOn)
                 glutIdleFunc(idle);
-            else 
+            else
                 headAngle = jumpcutValue(isHeadDown, headAngle, 12, 0);
             break;
         case 'e':
@@ -188,7 +218,7 @@ void keyboardCallback(unsigned char c, int x, int y) {
         case ' ':
             isJumpcutOn = !isJumpcutOn;
             break;
-
+            
     }
     
     glutPostRedisplay();
@@ -242,8 +272,8 @@ void displayCallback()
             break;
             
     }
-
-        
+    
+    
     drawAxis();
     
     // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -254,37 +284,6 @@ void displayCallback()
     
     glPushMatrix(); // Save camera matrix
     glColor3f(1,1,1); // Make rabbit white
-
-    // Check for jump animation
-    jumpAngle = startAnimation(isJumpUp, jumpAngle, 40, 0.2);
-    jumpHeight = startAnimation(isJumpUp, jumpHeight, 1, 0.005);
-    
-    // Check for rear animation
-    rearAngle = startAnimation(isReared, rearAngle, 90, 0.45);
-    
-    // Check for body curl animation
-    curlAngle = startAnimation(isCurled, curlAngle, 40, 0.2);
-    
-    // Check for front right leg animation
-    FRLegAngle = startAnimation(isFRLegUp, FRLegAngle, 70, 0.35);
-    
-    // Check for front left leg animation
-    FLLegAngle = startAnimation(isFLLegUp, FLLegAngle, 70, 0.35);
-    
-    // Check for head nod animation
-    headAngle = startAnimation(isHeadDown, headAngle, 12, 0.06);
-    
-    // Check for right ear wiggle animation
-    REAngle = startAnimation(isREdown, REAngle, 140, 0.7);
-    
-    // Check for left ear wiggle animation
-    LEAngle = startAnimation(isLEdown, LEAngle, 140, 0.7);
-    
-    // Check for back right leg animation
-    BRLegAngle = startAnimation(isBRLegUp, BRLegAngle, 70, 0.35);
-    
-    // Check for back left leg animation
-    BLLegAngle = startAnimation(isBLLegUp, BLLegAngle, 70, 0.35);
     
     // Draw middle body block
     glTranslatef(0,jumpHeight+1,0);
@@ -318,7 +317,7 @@ void displayCallback()
     glScalef(0.6,0.2,0.5);
     glutSolidCube(0.5);
     glPopMatrix();
-    glPopMatrix(); 
+    glPopMatrix();
     
     // Build front left leg
     glPushMatrix();
@@ -337,7 +336,7 @@ void displayCallback()
     glutSolidCube(0.5);
     glPopMatrix();
     glPopMatrix();
-
+    
     // Build neck
     glPushMatrix();
     glRotatef(-headAngle+15,0,0,1);
@@ -353,7 +352,7 @@ void displayCallback()
     glScalef(0.8,0.8,0.8);
     glutSolidCube(1);
     glScalef(1/0.8,1/0.8,1/0.8);
-
+    
     // Build right eye
     glPushMatrix();
     glTranslatef(0.355,0.07,0.17);
@@ -369,7 +368,7 @@ void displayCallback()
     glutSolidCube(1);
     glColor3f(1,1,1);
     glPopMatrix();
-
+    
     // Build the right ear
     glPushMatrix();
     glTranslatef(0.2,0,0.42);
@@ -379,7 +378,7 @@ void displayCallback()
     glScalef(0.2,0.7,0.07);
     glutSolidCube(1);
     glPopMatrix();
-
+    
     // Build the left ear
     glPushMatrix();
     glTranslatef(0.2,0,-0.42);
@@ -401,7 +400,7 @@ void displayCallback()
     glScaled(0.95,1,1);
     glutSolidCube(1.2);
     glScaled(1/0.95,1,1);
-
+    
     // Build the right back leg
     glPushMatrix();
     glTranslatef(-0.1,-0.25,0.75);
@@ -423,7 +422,7 @@ void displayCallback()
     glutSolidCube(1);
     glPopMatrix();
     glPopMatrix();
-  
+    
     // Build the back left leg
     glPushMatrix();
     glTranslatef(-0.1,-0.25,-0.75);
@@ -453,14 +452,14 @@ void displayCallback()
     glPopMatrix();
     
     
-//    cout << "jumpHeight " << jumpHeight << "\n";
-//    cout << "JumpAngle " << jumpAngle << "\n";
-//    cout << "headAngle " << headAngle << "\n";
-//    cout << "FLLegAngle " << FLLegAngle << "\n";
-//    cout << "FRLegAngle " << FRLegAngle << "\n";
-//    cout << "count:" << frames << "\n";
-//    cout << "REangle " << REAngle << isREdown << "  " << "\n";
-//    cout << "LEangle " << LEAngle << isLEdown << "  " << "\n";
+    //    cout << "jumpHeight " << jumpHeight << "\n";
+    //    cout << "JumpAngle " << jumpAngle << "\n";
+    //    cout << "headAngle " << headAngle << "\n";
+    //    cout << "FLLegAngle " << FLLegAngle << "\n";
+    //    cout << "FRLegAngle " << FRLegAngle << "\n";
+    //    cout << "count:" << frames << "\n";
+    //    cout << "REangle " << REAngle << isREdown << "  " << "\n";
+    //    cout << "LEangle " << LEAngle << isLEdown << "  " << "\n";
     
     // draw after the opaque objects, since it is translucent
     drawFloor();
@@ -476,7 +475,7 @@ void displayCallback()
     GLenum error = glGetError();
     if(error != GL_NO_ERROR)
         printf("ERROR: %s\n", gluErrorString(error));
-
+    
 }
 
 
