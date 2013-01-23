@@ -9,7 +9,7 @@
 
 // Jumpcut variable 
 bool isJumpcutOn = true;
-
+//
 // Front right leg animation variables
 GLfloat FRLegAngle = 0;
 bool isFRLegUp = false;
